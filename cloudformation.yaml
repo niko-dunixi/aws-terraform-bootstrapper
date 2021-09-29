@@ -27,17 +27,18 @@ Resources:
           TerraformBucket:
             Type: AWS::S3::Bucket
             Properties:
-              BucketName: !Sub terraform-${AWS::StackId}
+              # BucketName: !Sub terraform-${AWS::StackId}
+              BucketName: paulstestbucketbutwtf
               AccessControl: Private
-          TerraformTable:
-            Type: AWS::DynamoDB::Table
-            Properties:
-              TableName: !Sub terraform-${AWS::StackId}
-              BillingMode: PAY_PER_REQUEST
-              AttributeDefinitions:
-                - AttributeName: LockID
-                  AttributeType: S
-              KeySchema:
-                - AttributeName: LockID
-                  KeyType: HASH
+          # TerraformTable:
+          #   Type: AWS::DynamoDB::Table
+          #   Properties:
+          #     TableName: !Sub terraform-${AWS::StackId}
+          #     BillingMode: PAY_PER_REQUEST
+          #     AttributeDefinitions:
+          #       - AttributeName: LockID
+          #         AttributeType: S
+          #     KeySchema:
+          #       - AttributeName: LockID
+          #         KeyType: HASH
 

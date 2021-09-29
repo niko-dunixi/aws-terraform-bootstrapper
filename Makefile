@@ -11,8 +11,10 @@ permissions:
 	aws cloudformation validate-template --template-body file://permissions.yaml
 	aws cloudformation deploy \
 		--template-file permissions.yaml \
-		--stack-name stackset-permissions \
-		--parameter-overrides MyUserArn=$$(aws sts get-caller-identity --query Arn --output text) \
+		--stack-name stackset-permissions-$$(aws sts get-caller-identity --query Arn --output text | sed 's/.*\///g') \
+		--parameter-overrides \
+			UserArn=$$(aws sts get-caller-identity --query Arn --output text)  \
+			UserName=$$(aws sts get-caller-identity --query Arn --output text | sed 's/.*\///g')  \
 		--capabilities CAPABILITY_NAMED_IAM
 
 # .PHONY:

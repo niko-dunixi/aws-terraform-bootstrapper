@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  MyUserArn:
+    Type: String
+
+Resources:
+  AdminRole:
+    Type: AWS::IAM::Role
+    Properties:
+      # RoleName: AWSCloudFormationStackSetAdministrationRole
+      RoleName: ICanStackSets
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - !Ref MyUserArn
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: CanStackSets
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'cloudformation:*'
+                Resource:
+                  - '*'
+              - Effect: Allow
+                Action:
+                  - 'cloudformation:*'
+                Resource:
+                  - !Sub 'arn:aws:cloudformation:*:${AWS::AccountId}:stack/*/*'
+                  - !Sub 'arn:aws:cloudformation:*:${AWS::AccountId}:stackset-target/*'
+                  - !Sub 'arn:aws:cloudformation:*:${AWS::AccountId}:stackset/*:*'

@@ -1,0 +1,69 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: >
+  A simple bootstrapping template to create the buckets
+  and tables for terraform state and mutex locking.
+
+Resources:
+  TerraformBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref AWS::StackName
+      AccessControl: Private
+      Tags:
+        - Key: stack
+          Value: terraform_bootstrap
+  TerraformTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref AWS::StackName
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: LockID
+          AttributeType: S
+      KeySchema:
+        - AttributeName: LockID
+          KeyType: HASH
+      Tags:
+        - Key: stack
+          Value: terraform_bootstrap
+
+
+# Resources:
+#   StackSet:
+#     Type: AWS::CloudFormation::StackSet
+#     Properties:
+#       StackSetName: !Ref AWS::StackName
+#       PermissionModel: SELF_MANAGED
+#       StackInstancesGroup:
+#         - Regions:
+#           - us-east-1
+#           - us-east-2
+#           - us-west-1
+#           - us-west-2
+#           DeploymentTargets:
+#             Accounts:
+#               - !Ref AWS::AccountId
+#       Tags:
+#         - Key: stack
+#           Value: terraform_bootstrap
+#       TemplateBody: |
+        # Resources:
+        #   TerraformBucket:
+        #     Type: AWS::S3::Bucket
+        #     Properties:
+        #       # BucketName: !Sub terraform-${AWS::StackId}
+        #       BucketName: paulstestbucketbutwtf
+        #       AccessControl: Private
+          # TerraformTable:
+          #   Type: AWS::DynamoDB::Table
+          #   Properties:
+          #     TableName: !Sub terraform-${AWS::StackId}
+          #     BillingMode: PAY_PER_REQUEST
+          #     AttributeDefinitions:
+          #       - AttributeName: LockID
+          #         AttributeType: S
+          #     KeySchema:
+          #       - AttributeName: LockID
+          #         KeyType: HASH
+

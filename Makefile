@@ -4,6 +4,10 @@ CFN_FILE =
 
 .PHONY: build
 all: permissions
+	$(MAKE) bootstrap-region AWS_REGION=us-east-1
+	$(MAKE) bootstrap-region AWS_REGION=us-east-2
+	$(MAKE) bootstrap-region AWS_REGION=us-west-1
+	$(MAKE) bootstrap-region AWS_REGION=us-west-2
 
 .PHONY: permissions
 permissions:
@@ -16,6 +20,21 @@ permissions:
 			UserArn=$$(aws sts get-caller-identity --query Arn --output text)  \
 			UserName=$$(aws sts get-caller-identity --query Arn --output text | sed 's/.*\///g')  \
 		--capabilities CAPABILITY_NAMED_IAM
+
+.PHONY: bootstrap-region
+bootstrap-region:
+	@[ -n $(AWS_REGION) ] || (echo "You must manually set the AWS_REGION" && exit 1)
+	AWS_REGION=$(AWS_REGION) aws cloudformation deploy \
+		--template-file terraform-cloudformation.yaml \
+		--stack-name terraform-bootstrap-$(AWS_REGION)
+
+# .PHONY: bootstrap
+# bootstrap:
+# 	cfn-lint -t terraform-cloudformation.yaml
+# 	aws cloudformation validate-template --template-body file://terraform-cloudformation.yaml
+# 	aws cloudformation deploy \
+# 		--template-file terraform-cloudformation.yaml \
+# 		--stack-name terraform-bootstrap
 
 # .PHONY:
 # deploy:

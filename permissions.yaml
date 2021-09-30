@@ -1,26 +1,27 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Parameters:
-  MyUserArn:
+  UserName:
+    Type: String
+  UserArn:
     Type: String
 
 Resources:
-  AdminRole:
+  UserStackSetRole:
     Type: AWS::IAM::Role
     Properties:
-      # RoleName: AWSCloudFormationStackSetAdministrationRole
-      RoleName: ICanStackSets
+      RoleName: !Sub "${UserName}-CanStackSets"
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
           - Effect: Allow
             Principal:
               AWS:
-                - !Ref MyUserArn
+                - !Ref UserArn
             Action:
               - sts:AssumeRole
       Policies:
-        - PolicyName: CanStackSets
+        - PolicyName: !Sub ${UserName}-CanStackSetsPolicy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
